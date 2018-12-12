@@ -1,11 +1,15 @@
-import requests,time
+import requests,time,re
 from bs4 import BeautifulSoup
 
 
 VioceID = 6207
 
-url = 'http://m.ysxs8.com/playdata/63/%d.js'%VioceID
+
+url = 'http://m.ysxs8.com/yousheng/%d_1.html'%VioceID
 html = requests.get(url).text
+PlayUrl = re.findall('src=\"(.*playdata.*?)\"><',html)[0]
+PlayUrl = 'http://m.ysxs8.com'+PlayUrl
+html = requests.get(PlayUrl).text
 html = html.replace(']','')
 html = html.replace('[','')
 html = html.replace("'",'')
@@ -21,4 +25,3 @@ for Voice in VoiceList:
             f.writelines(['aria2c -o '+Name +'.m4a '+ DownloadUrl +'\n'])
     except:
         pass
-
